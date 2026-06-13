@@ -3,22 +3,27 @@
 /**
  * Scene.tsx — Main React Three Fiber Canvas and scene composition.
  *
- * This component wraps all 3D elements in a single Canvas and is designed
- * to be embedded inside the Hero section container. It composes:
- *  - StarsBackground: Deep-space star field
- *  - Lights: Multi-light cinematography rig
- *  - Prism: Rotating transparent glass prism
+ * Composes the complete "Dark Side of the Moon" scene:
+ *  1. StarsBackground — Deep-space star field (furthest layer)
+ *  2. Lights — Multi-light cinematography rig
+ *  3. WhiteBeam — Incoming white light from the left
+ *  4. Prism — Rotating transparent glass prism at the centre
+ *  5. RainbowSpectrum — Seven ROYGBIV beams fanning out to the right
+ *
+ * The beams are positioned in world space (not parented to the prism group)
+ * so they remain fixed while the prism slowly rotates between them — this
+ * matches the iconic album cover composition where the beams are static
+ * and the prism sits at the intersection point.
  *
  * Camera setup:
- *  - Position [0, 0, 6]: Pulls back enough to see the full prism
- *  - FOV 45: Slightly narrow for a cinematic look (less distortion)
+ *  - Position [0, 0, 6]: Far enough to frame the full beam spread
+ *  - FOV 45: Slightly narrow for a cinematic, compressed perspective
  *
- * Performance considerations:
- *  - dpr clamped to [1, 2] to avoid excessive pixel density on 3x screens
- *  - antialias enabled for smooth prism edges
- *  - alpha: true so the canvas background is transparent, allowing the
- *    CSS background to show through (pure black #000)
- *  - Suspense boundary with a minimal loading spinner
+ * Performance:
+ *  - dpr clamped to [1, 2] to cap pixel density on high-DPI screens
+ *  - antialias on for smooth prism edges
+ *  - alpha: true for transparent canvas background (CSS bg shows through)
+ *  - Suspense boundary catches async Three.js initialisation
  */
 
 import { Suspense } from 'react'
@@ -26,6 +31,8 @@ import { Canvas } from '@react-three/fiber'
 import Prism from './Prism'
 import Lights from './Lights'
 import StarsBackground from './StarsBackground'
+import WhiteBeam from './WhiteBeam'
+import RainbowSpectrum from './RainbowSpectrum'
 
 export default function Scene() {
   return (
@@ -48,21 +55,28 @@ export default function Scene() {
           dpr={[1, 2]}
           gl={{
             antialias: true,
-            alpha: true,       // Transparent background
+            alpha: true,
             powerPreference: 'high-performance',
           }}
           style={{ background: 'transparent' }}
         >
-          {/* Deep-space star field — rendered first (behind everything) */}
+          {/* Layer 1: Deep-space star field (behind everything) */}
           <StarsBackground />
 
-          {/* Multi-light cinematography rig */}
+          {/* Layer 2: Cinematography lighting rig */}
           <Lights />
 
-          {/* Prism centred at the origin with rotation and floating animation */}
+          {/*
+           * Layer 3: The complete refraction composition.
+           * Beam → Prism → Spectrum are siblings in world space so the
+           * beams stay fixed while the prism rotates independently.
+           */}
+          <WhiteBeam />
           <Prism />
+          <RainbowSpectrum />
         </Canvas>
       </Suspense>
     </div>
   )
 }
+
