@@ -5,6 +5,7 @@ import Skills from '@/components/sections/Skills'
 import Projects from '@/components/sections/Projects'
 import Contact from '@/components/sections/Contact'
 import Footer from '@/components/layout/Footer'
+import MusicPlayer from '@/components/music/MusicPlayer'
 
 export default function Home() {
   return (
@@ -23,6 +24,9 @@ export default function Home() {
 
       {/* Global Footer */}
       <Footer />
+
+      {/* Cinematic Floating Music Player widget */}
+      <MusicPlayer />
     </div>
   )
 }
