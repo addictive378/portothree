@@ -25,6 +25,7 @@
 import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { scrollState } from './scrollStore'
 
 /**
  * The 7 spectrum colours (ROYGBIV) with their target fan-out angles.
@@ -119,11 +120,11 @@ function SpectrumBeam({
 
     if (coreRef.current) {
       ;(coreRef.current.material as THREE.MeshBasicMaterial).opacity =
-        SPECTRUM_CONFIG.coreOpacity + shimmer
+        (SPECTRUM_CONFIG.coreOpacity + shimmer) * scrollState.beamIntensity
     }
     if (glowRef.current) {
       ;(glowRef.current.material as THREE.MeshBasicMaterial).opacity =
-        SPECTRUM_CONFIG.glowOpacity + shimmer * 0.4
+        (SPECTRUM_CONFIG.glowOpacity + shimmer * 0.4) * scrollState.beamIntensity
     }
   })
 

@@ -200,7 +200,7 @@ export default function Projects() {
     <section
       id="projects"
       ref={containerRef}
-      className="relative py-20 lg:py-32 bg-black overflow-hidden"
+      className="relative py-20 lg:py-32 bg-transparent overflow-hidden"
       aria-label="Projects Portfolio Section"
     >
       {/* Background ambient lighting - Blue & Violet refraction */}

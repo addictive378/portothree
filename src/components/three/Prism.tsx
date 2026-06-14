@@ -11,14 +11,22 @@
  * Animation:
  *  - Slow continuous rotation on the Y axis (cinematic feel)
  *  - Gentle sinusoidal floating on the Y position (weightlessness)
+ *  - Rotation speed is modulated by scrollState.rotationSpeed, written
+ *    by SceneOrchestrator per section (e.g. faster during Skills).
  */
 
 import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { scrollState } from './scrollStore'
 
 export default function Prism() {
   const meshRef = useRef<THREE.Mesh>(null)
+
+  // Tracks accumulated rotation angle. Using a ref instead of
+  // elapsed * speed means the rotation stays smooth when speed changes
+  // mid-scroll — no sudden jumps.
+  const accumulatedRotation = useRef(0)
 
   // Pre-compute the initial X rotation so the triangular face is oriented
   // towards the camera. We memoise to avoid recalculating every render.
@@ -28,13 +36,18 @@ export default function Prism() {
   )
 
   // Per-frame animation loop — runs at display refresh rate
-  useFrame((state) => {
+  useFrame((state, delta) => {
     if (!meshRef.current) return
 
     const elapsed = state.clock.getElapsedTime()
 
-    // Slow rotation on Y axis — 0.12 rad/s gives a calm, cinematic pace
-    meshRef.current.rotation.y = elapsed * 0.12
+    // Accumulate rotation using delta * speed instead of elapsed * constant.
+    // This way, when rotationSpeed changes (via SceneOrchestrator writing to
+    // scrollStore), the prism smoothly adjusts its orbit rate without jumping.
+    const baseSpeed = 0.12 // rad/s at rotationSpeed = 1.0
+    accumulatedRotation.current += delta * baseSpeed * scrollState.rotationSpeed
+
+    meshRef.current.rotation.y = accumulatedRotation.current
 
     // Gentle floating oscillation (±0.15 units over a ~4s cycle)
     meshRef.current.position.y = Math.sin(elapsed * 0.6) * 0.15
