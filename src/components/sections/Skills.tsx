@@ -198,7 +198,7 @@ export default function Skills() {
     <section
       id="skills"
       ref={containerRef}
-      className="relative py-20 lg:py-32 bg-black overflow-hidden"
+      className="relative py-20 lg:py-32 bg-transparent overflow-hidden"
       aria-label="Capabilities Section"
     >
       {/* Background ambient lighting - Yellow & Green refraction */}

@@ -24,6 +24,7 @@
 import { useRef, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { scrollState } from './scrollStore'
 
 /** Configuration for the white beam's appearance and position */
 const BEAM_CONFIG = {
@@ -85,11 +86,11 @@ export default function WhiteBeam() {
 
     if (coreRef.current) {
       ;(coreRef.current.material as THREE.MeshBasicMaterial).opacity =
-        BEAM_CONFIG.coreOpacity + pulse
+        (BEAM_CONFIG.coreOpacity + pulse) * scrollState.beamIntensity
     }
     if (glowRef.current) {
       ;(glowRef.current.material as THREE.MeshBasicMaterial).opacity =
-        BEAM_CONFIG.glowOpacity + pulse * 0.3
+        (BEAM_CONFIG.glowOpacity + pulse * 0.3) * scrollState.beamIntensity
     }
   })
 

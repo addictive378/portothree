@@ -194,7 +194,7 @@ export default function About() {
     <section
       id="about"
       ref={containerRef}
-      className="relative py-20 lg:py-32 bg-black overflow-hidden"
+      className="relative py-20 lg:py-32 bg-transparent overflow-hidden"
       aria-label="About Me Section"
     >
       {/* Background ambient gradient glow - Violet/Blue */}
